@@ -6,9 +6,10 @@ import { SolarSystemData } from '../data/SolarSystemData';
 import { Planet } from './Planet';
 import * as THREE from 'three';
 import { useControls } from 'leva';
+import { SolarWind } from './simulations/SolarWind';
 
 export function Experience() {
-    const { physics, cameraTarget, setPhysicsParam, setCameraTarget } = useStore();
+    const { physics, cameraTarget, setPhysicsParam, setCameraTarget, activeTopic } = useStore();
     const controlsRef = useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // Sync Zustand with Leva GUI
@@ -89,6 +90,9 @@ export function Experience() {
                     isFocused={cameraTarget === data.name}
                 />
             ))}
+
+            {/* Simulations */}
+            {activeTopic === 'current' && <SolarWind />}
         </>
     );
 }

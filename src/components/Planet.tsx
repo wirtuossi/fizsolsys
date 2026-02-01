@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import type { ICelestialBodyConfig } from '../data/SolarSystemData';
+import { useStore } from '../store';
+import { VectorArrow } from './simulations/VectorArrow';
 
 interface PlanetProps {
     config: ICelestialBodyConfig;
@@ -14,6 +16,7 @@ interface PlanetProps {
 export function Planet({ config, timeScale, showOrbits, isFocused }: PlanetProps) {
     const meshRef = useRef<THREE.Mesh>(null);
     const angleRef = useRef(Math.random() * Math.PI * 2);
+    const { activeTopic } = useStore();
 
     useFrame((_state, delta) => {
         if (!meshRef.current) return;
@@ -40,6 +43,10 @@ export function Planet({ config, timeScale, showOrbits, isFocused }: PlanetProps
         }).flat()
     );
 
+    // Topic Logic
+    const showVelocity = activeTopic === 'mechanics' && config.distance > 0;
+    const showForce = activeTopic === 'forces' && config.distance > 0;
+
     return (
         <group>
             {/* Planet Mesh */}
@@ -57,6 +64,10 @@ export function Planet({ config, timeScale, showOrbits, isFocused }: PlanetProps
                 {config.distance === 0 && (
                     <pointLight intensity={2} decay={2} distance={300} color="#ffffff" />
                 )}
+
+                {/* Visual Helpers */}
+                {showVelocity && <VectorArrow parentRef={meshRef} type="velocity" color="#00ff00" scale={0.5 + config.radius / 2} />}
+                {showForce && <VectorArrow parentRef={meshRef} type="force" color="#ff0000" scale={0.5 + config.radius / 2} />}
 
                 {/* Focused Label */}
                 {isFocused && (
