@@ -11,7 +11,7 @@ interface VectorArrowProps {
     type: 'velocity' | 'force';
 }
 
-export function VectorArrow({ color, label, scale = 1, parentRef, type }: VectorArrowProps) {
+export function VectorArrow({ color, scale = 1, parentRef, type }: VectorArrowProps) {
     const arrowRef = useRef<THREE.ArrowHelper>(null);
     const dir = useMemo(() => new THREE.Vector3(1, 0, 0), []);
 
