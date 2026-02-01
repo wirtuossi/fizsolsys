@@ -5,13 +5,17 @@ import { CelestialBody } from '../objects/CelestialBody';
 import * as THREE from 'three';
 
 // Define Simulation Types
-export enum Topic {
-    intro = 'intro',
-    mechanics = 'mechanics', // 3. Mechanical Motion
-    forces = 'forces',       // 4. Forces (Gravity)
-    energy = 'energy',       // 6. Energy
-    light = 'light'          // 10. Light
-}
+// Define Simulation Types
+export const Topic = {
+    intro: 'intro',
+    mechanics: 'mechanics', // 3. Mechanical Motion
+    forces: 'forces',       // 4. Forces (Gravity)
+    energy: 'energy',       // 6. Energy
+    light: 'light'          // 10. Light
+} as const;
+
+export type TopicType = typeof Topic[keyof typeof Topic];
+
 
 export class SimulationManager {
     private engine: Engine;

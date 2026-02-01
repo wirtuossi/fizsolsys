@@ -13,12 +13,28 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 
 const canvas = document.querySelector<HTMLCanvasElement>('#webgl-canvas')!;
 
-// Initialize Core Systems
-const engine = new Engine(canvas);
-const simManager = new SimulationManager(engine);
-const uiManager = new UIManager(simManager); // eslint-disable-line @typescript-eslint/no-unused-vars
+try {
+  // Initialize Core Systems
+  const engine = new Engine(canvas);
+  const simManager = new SimulationManager(engine);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const uiManager = new UIManager(simManager);
 
-// Start Loop
-engine.start();
+  // Start Loop
+  engine.start();
 
-console.log('FizSolSys Initialized');
+  console.log('FizSolSys Initialized');
+} catch (err: any) {
+  console.error(err);
+  document.body.innerHTML += `<div style="position:absolute;top:0;left:0;color:red;padding:20px;background:white;z-index:9999">
+    <h1>Error Initializing App</h1>
+    <pre>${err?.message || err}</pre>
+    <pre>${err?.stack || ''}</pre>
+  </div>`;
+}
+
+window.addEventListener('error', (event) => {
+  document.body.innerHTML += `<div style="position:absolute;bottom:0;left:0;color:red;padding:20px;background:rgba(255,255,255,0.8);z-index:9999">
+    <b>Runtime Error:</b> ${event.message}
+  </div>`;
+});
