@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
-import { ICelestialBodyConfig } from '../data/SolarSystemData';
+import type { ICelestialBodyConfig } from '../data/SolarSystemData';
 
 interface PlanetProps {
     config: ICelestialBodyConfig;
@@ -13,10 +13,9 @@ interface PlanetProps {
 
 export function Planet({ config, timeScale, showOrbits, isFocused }: PlanetProps) {
     const meshRef = useRef<THREE.Mesh>(null);
-    const orbitRef = useRef<THREE.Group>(null);
     const angleRef = useRef(Math.random() * Math.PI * 2);
 
-    useFrame((state, delta) => {
+    useFrame((_state, delta) => {
         if (!meshRef.current) return;
 
         // Orbital Motion
@@ -29,6 +28,17 @@ export function Planet({ config, timeScale, showOrbits, isFocused }: PlanetProps
         // Self Rotation
         meshRef.current.rotation.y += config.rotationSpeed * timeScale;
     });
+
+    const orbitPoints = new Float32Array(
+        [...Array(129)].map((_, i) => {
+            const angle = (i / 128) * Math.PI * 2;
+            return [
+                Math.cos(angle) * config.distance,
+                0,
+                Math.sin(angle) * config.distance
+            ];
+        }).flat()
+    );
 
     return (
         <group>
@@ -60,24 +70,18 @@ export function Planet({ config, timeScale, showOrbits, isFocused }: PlanetProps
 
             {/* Orbit Line */}
             {config.distance > 0 && showOrbits && (
-                <line rotation={[Math.PI / 2, 0, 0]}>
+                <lineLoop rotation={[0, 0, 0]}>
                     <bufferGeometry>
                         <bufferAttribute
                             attach="attributes-position"
-                            count={129} // 128 segments + 1 to close
-                            array={new Float32Array([...Array(129)].map((_, i) => {
-                                const angle = (i / 128) * Math.PI * 2;
-                                return [
-                                    Math.cos(angle) * config.distance,
-                                    Math.sin(angle) * config.distance,
-                                    0
-                                ];
-                            }).flat())}
+                            count={129}
+                            array={orbitPoints}
                             itemSize={3}
+                            args={[orbitPoints, 3]}
                         />
                     </bufferGeometry>
                     <lineBasicMaterial color="white" opacity={0.15} transparent />
-                </line>
+                </lineLoop>
             )}
         </group>
     );

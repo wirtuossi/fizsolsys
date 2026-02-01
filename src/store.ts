@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { TopicId, TOPICS } from './data/Topics';
+import type { TopicId } from './data/Topics';
 
 interface SimulationState {
     activeTopic: TopicId;

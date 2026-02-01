@@ -1,16 +1,15 @@
 import { useRef, useEffect } from 'react';
-import { useThree, useFrame } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import { useStore } from '../store';
 import { SolarSystemData } from '../data/SolarSystemData';
 import { Planet } from './Planet';
 import * as THREE from 'three';
-import { Leva, useControls } from 'leva';
+import { useControls } from 'leva';
 
 export function Experience() {
     const { physics, cameraTarget, setPhysicsParam, setCameraTarget } = useStore();
-    const controlsRef = useRef<any>(null);
-    const { camera } = useThree();
+    const controlsRef = useRef<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // Sync Zustand with Leva GUI
     useControls('Фізичні параметри', {
